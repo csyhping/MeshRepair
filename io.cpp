@@ -1,6 +1,5 @@
 #include "header\io.h"
-#include <iostream>
-#include <ctime>
+
 
 void default_info() {
 	std::cout << "First Mesh Demo by Yuhan Ping. Version 0.1." << std::endl;
@@ -15,7 +14,7 @@ void default_info() {
 	exit(0);
 }
 
-bool load_file_off(char*filename, Eigen::MatrixXd V, Eigen::MatrixXi F, bool viewer_on) {
+bool load_file_off(char* filename, Eigen::MatrixXd &V, Eigen::MatrixXi &F, bool viewer_on) {
 	bool load_file_flag = false;
 	load_file_flag = igl::readOFF(filename, V, F);
 	if (load_file_flag) {
