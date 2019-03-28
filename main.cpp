@@ -18,14 +18,22 @@ using namespace std;
 using namespace Eigen;
 
 // define the vertex and face matrix
-MatrixXd V, V2, V_max(1, 3);
-MatrixXi F, F2, F_max(1, 3);
-MatrixX2i Components_P_F(1, 2), Components_P_V(1, 2);
+MatrixXd V, V2, V_max(1, 3), color_per_face;;
 /*
-	Components_P_F: records the components start and end position on face
-	Components_P_V: records the components start and end position on vertex
+	V: vertex of input mesh
+	V_max: max vertex components 
+	color_per_face: color for each face 
 */
-VectorXi CF, All_Components_F(1),All_Components_V(1), CV;
+
+MatrixXi F, F2, F_max(1, 3), Components_P_F, Components_P_V;
+/*
+	F: faces of input mesh
+	F_max: max face components
+	Components_P_F: records the face position belongs to each components
+	Components_P_V: records the vertex position belongs to each components
+*/
+
+VectorXi CF, All_Components_F,All_Components_V, CV;
 /*
 	CF: connected components ids per faces
 	All_Components_F: all connect components info on faces
@@ -35,40 +43,27 @@ VectorXi CF, All_Components_F(1),All_Components_V(1), CV;
 
 bool viewer_on = false;
 
-
-
-// keyboard interaction
-bool keydown(igl::opengl::glfw::Viewer&viewer, unsigned int key, int modifier) {
-	std::cout << "key " << key << (unsigned int)key << std::endl;
-	if (key == '1') {
-		viewer.data().clear();
-		viewer.data().set_mesh(V, F);
-		return true;
-	}
-	else if (key == '2') {
-		viewer.data().clear();
-		viewer.data().set_mesh(V2, F2);
-		return true;
-	}
-	return false;
-}
-
 int main(int argv, char* argc[]) {
 	// print the default info
-	//if (argv < 2) {
-	//	default_info();
-	//}
-	//if (argv == 3 && !strcmp(argc[2], "-o")) {
-	//	viewer_on = true;
-	//}
-
+	if (argv < 2) {
+		default_info();
+	}
+	if (argv == 3 && !strcmp(argc[2], "-o")) {
+		viewer_on = true;
+	}
+	//"C:/Users/admin/csyhping/Project/MeshRepair/MeshRepair/coffeecup.off"
 	// read off file 
-	load_file_off("C:/Users/admin/csyhping/Project/MeshRepair/MeshRepair/coffeecup.off", V, F, viewer_on);
+	load_file_off(argc[1], V, F);
 
 	// calculate connect components
-	get_components(F, CF, CV, All_Components_F, All_Components_V, Components_P_F, Components_P_V);
+	get_components(V, F, CF, CV, All_Components_F, All_Components_V, Components_P_F, Components_P_V);
 
-	detete_isolate_Triangles(V, F, All_Components_F, Components_P_F, V_max, F_max);
+	if (viewer_on) {
+		set_color_per_component(V, F, CF, color_per_face);
+	}
+
+	// delete isolate triangles
+	detete_isolate_Triangles(V, F, All_Components_F,All_Components_V, Components_P_F,Components_P_V, V_max, F_max);
 
 	getchar();
 
