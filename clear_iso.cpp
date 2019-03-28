@@ -1,9 +1,9 @@
 #include "header\clear_iso.h"
 
 
-bool get_components(MatrixXi &F, VectorXi &C, VectorXi &AC, MatrixX2i & CP) {
+bool get_components(MatrixXi &F, VectorXi &CF, VectorXi &AC, MatrixX2i & CP) {
 	// find connect components
-	igl::facet_components(F, C);
+	igl::facet_components(F, CF);
 
 	int current_components_id = 0;
 	int component_counts = 1; // at least there is a component
@@ -15,15 +15,15 @@ bool get_components(MatrixXi &F, VectorXi &C, VectorXi &AC, MatrixX2i & CP) {
 
 	
 	// find the max components
-	for (int i = 0; i < C.rows(); i++) {
-		if (C(i) == current_components_id) {
-			AC(C(i)) += 1;
+	for (int i = 0; i < CF.rows(); i++) {
+		if (CF(i) == current_components_id) {
+			AC(CF(i)) += 1;
 		}
 		else
 		{
 			CP(current_components_id, 0) = i - AC(current_components_id); // start pos
 			CP(current_components_id, 1) = i - 1; // end pos
-			current_components_id = C(i);
+			current_components_id = CF(i);
 			component_counts += 1;
 			// if #components > current AC size, need to resize and initialize as 1
 			AC.conservativeResize(component_counts); // .resize() will do damage
@@ -32,8 +32,8 @@ bool get_components(MatrixXi &F, VectorXi &C, VectorXi &AC, MatrixX2i & CP) {
 		}
 
 	}
-	CP(current_components_id, 0) = C.rows() - AC(current_components_id);
-	CP(current_components_id, 1) = C.rows() - 1;
+	CP(current_components_id, 0) = CF.rows() - AC(current_components_id);
+	CP(current_components_id, 1) = CF.rows() - 1;
 
 	cout << "There are " << component_counts << " components" << endl;
 	cout << "All Components info [components id][faces]:" << endl << AC << endl;
@@ -41,7 +41,7 @@ bool get_components(MatrixXi &F, VectorXi &C, VectorXi &AC, MatrixX2i & CP) {
 	return true;
 }
 
-bool detete_isolate_Triangles(MatrixXd &V, MatrixXi &F, VectorXi &C, VectorXi &AC, MatrixX2i &CP, MatrixXd &V_max, MatrixXi &F_max) {
+bool detete_isolate_Triangles(MatrixXd &V, MatrixXi &F, VectorXi &AC, MatrixX2i &CP, MatrixXd &V_max, MatrixXi &F_max) {
 	// locate max components position and its counts
 	VectorXi::Index maxRow, maxCol;
 	int max_components = AC.maxCoeff(&maxRow, &maxCol);

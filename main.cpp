@@ -12,7 +12,6 @@
 #include <igl\extract_manifold_patches.h>
 #include "header\io.h"
 #include "header\clear_iso.h"
-#include <igl\facet_components.h>
 
 
 using namespace std;
@@ -25,10 +24,11 @@ MatrixX2i Components_P(1, 2);
 /*
 	Components_P: records the components start and end position
 */
-VectorXi C, All_Components(1);
+VectorXi CF, All_Components(1),CV;
 /*
-	C: connected components ids
+	CF: connected components ids per faces
 	AC: all connect components info
+	CV: connected components idx per vertex
 */
 
 bool viewer_on = false;
@@ -61,12 +61,12 @@ int main(int argv, char* argc[]) {
 	//}
 
 	// read off file 
-	load_file_off("F:/StudyMaterials/HKU/RA/MeshRepair/MeshRepair/coffeecup.off", V2, F2, viewer_on);
+	load_file_off("C:/Users/admin/csyhping/Project/MeshRepair/MeshRepair/coffeecup.off", V, F, viewer_on);
 
 	// calculate connect components
-	get_components(F2, C, All_Components, Components_P);
+	get_components(F, CF, All_Components, Components_P);
 
-	detete_isolate_Triangles(V2, F2, C, All_Components, Components_P, V_max, F_max);
+	detete_isolate_Triangles(V, F, All_Components, Components_P, V_max, F_max);
 
 	getchar();
 
