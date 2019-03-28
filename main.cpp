@@ -20,14 +20,16 @@ using namespace Eigen;
 // define the vertex and face matrix
 MatrixXd V, V2, V_max(1, 3);
 MatrixXi F, F2, F_max(1, 3);
-MatrixX2i Components_P(1, 2);
+MatrixX2i Components_P_F(1, 2), Components_P_V(1, 2);
 /*
-	Components_P: records the components start and end position
+	Components_P_F: records the components start and end position on face
+	Components_P_V: records the components start and end position on vertex
 */
-VectorXi CF, All_Components(1),CV;
+VectorXi CF, All_Components_F(1),All_Components_V(1), CV;
 /*
 	CF: connected components ids per faces
-	AC: all connect components info
+	All_Components_F: all connect components info on faces
+	All_Components_V: all connect components info on vertex
 	CV: connected components idx per vertex
 */
 
@@ -64,9 +66,9 @@ int main(int argv, char* argc[]) {
 	load_file_off("C:/Users/admin/csyhping/Project/MeshRepair/MeshRepair/coffeecup.off", V, F, viewer_on);
 
 	// calculate connect components
-	get_components(F, CF, All_Components, Components_P);
+	get_components(F, CF, CV, All_Components_F, All_Components_V, Components_P_F, Components_P_V);
 
-	detete_isolate_Triangles(V, F, All_Components, Components_P, V_max, F_max);
+	detete_isolate_Triangles(V, F, All_Components_F, Components_P_F, V_max, F_max);
 
 	getchar();
 
