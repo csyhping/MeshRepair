@@ -9,13 +9,26 @@ This is for detecting and clean isolated triangles
 #include <igl\facet_components.h>
 #include <igl/vertex_components.h>
 #include <igl/jet.h>
+#include <igl\remove_unreferenced.h>
+#include <igl\write_triangle_mesh.h>
+#include <igl\slice.h>
 #include <iostream>
 
 using namespace std;
 using namespace Eigen;
 
+bool delete_iso_v(MatrixXd &V, MatrixXi &F, MatrixXd &NV, MatrixXi &NF, MatrixXd &IM); // delete isolate vertex
+/*
+	V: vertex matrix
+	F: face matrix
+	NV: vertex matrix after delete iso vertex
+	NF: face matrix after delete iso vertex
+	IM: #V by 1 list of indices such that: NF = IM(F) and NT = IM(T) and V(find(IM<=size(NV,1)),:) = NV
+*/
+
 bool get_components(MatrixXd &V, MatrixXi &F, VectorXi &CF,VectorXi &CV, VectorXi &ACF,VectorXi &ACV, MatrixXi & CPF, MatrixXi & CPV);// detect the isolated triangles
 /*
+	V: vertex matrix
 	F: face matrix
 	CF: connect components ids per face
 	CV: connect components idx per vertex

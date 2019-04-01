@@ -1,6 +1,22 @@
 #include "header\clear_iso.h"
 #include <igl/opengl/glfw/Viewer.h>
 
+bool delete_iso_v(MatrixXd &V, MatrixXi &F, MatrixXd &NV, MatrixXi &NF, MatrixXd &IM) {
+	igl::remove_unreferenced(V, F, NV, NF, IM);
+	int removed_vertex = V.rows() - NV.rows();
+	if (removed_vertex != 0) {
+		cout << removed_vertex << " vertices has been detected and removed." << endl;
+		
+		// if remove iso vertices, refresh V/F by NV/NF
+		V.resize(NV.rows(), NV.cols());
+		V = NV;
+		cout << "New v " << V.rows() << endl;
+		F.resize(NF.rows(), NF.cols());
+		F = NF;
+	}
+	return true;
+}
+
 bool get_components(MatrixXd &V, MatrixXi &F, VectorXi &CF,VectorXi &CV, VectorXi &ACF, VectorXi &ACV, MatrixXi & CPF, MatrixXi & CPV) {
 
 	VectorXi::Index maxRow, maxCol;
@@ -13,8 +29,8 @@ bool get_components(MatrixXd &V, MatrixXi &F, VectorXi &CF,VectorXi &CV, VectorX
 	int max_f_size = CF.maxCoeff();
 	int max_v_size = CV.maxCoeff();
 	cout << "[INFO]" << endl;
-	cout << "There are " << max_f_size << " face components" << endl;
-	cout << "There are " << max_v_size << " vertex components" << endl;
+	cout << "There are " << max_f_size + 1 << " face components" << endl;
+	cout << "There are " << max_v_size + 1 << " vertex components" << endl;
 
 	// resize above dynamic vars
 	ACF.resize(max_f_size + 1);
@@ -69,10 +85,37 @@ bool get_components(MatrixXd &V, MatrixXi &F, VectorXi &CF,VectorXi &CV, VectorX
 
 bool detete_isolate_Triangles(MatrixXd &V, MatrixXi &F, VectorXi &ACF, VectorXi &ACV, MatrixXi &CPF, MatrixXi & CPV, MatrixXd &V_max, MatrixXi &F_max) {
 	// locate max components position and its counts
-	VectorXi::Index maxRow, maxCol;
-	int max_components = ACF.maxCoeff(&maxRow, &maxCol);
-	cout << "[INFO]" << endl;
-	cout << "Max components " << max_components << " at " << maxRow << endl;
+	VectorXi::Index maxRow_F, maxCol_F, maxRow_V, maxCol_V;
+	int max_components_f = ACF.maxCoeff(&maxRow_F, &maxCol_F);
+	int max_components_v = ACV.maxCoeff(&maxRow_V, &maxCol_V);
+
+	VectorXi RV, FV; // slice vector for V and F
+	
+	// initialization
+	RV.resize(ACV(maxRow_V));
+	FV.resize(ACF(maxRow_F));
+
+	for (int i = 0; i < ACV(maxRow_V); i++) {
+		if (i > 0 && CPV(maxRow_V,i) == 0) {
+			// cut when meet 0 in CPV
+			break;
+		}
+		else {
+			RV(i) = CPV(maxRow_V, i);
+		}
+	}
+
+	cout << "RV size " << RV.rows() << endl;
+	//for (int i = 0; i < ACF(maxRow_F); i++) {
+
+	//}
+
+ 
+	
+	// igl::slice(A,R,C,B)
+	igl::slice(V, RV, , V_max);
+	cout << "V_max " << V_max.rows() << endl;
+	//igl::slice(F, FV, 3, F_max);
 
 	return true;
 }
