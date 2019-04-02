@@ -5,6 +5,8 @@
 */
 #ifndef IO_H
 #define IO_H
+#define CURRENTVERSION 0.5
+#define UPDATETIME "02/04/2019"
 
 #include <igl\readOFF.h>
 #include <igl\opengl\glfw\Viewer.h>
@@ -13,7 +15,6 @@
 #include <igl\opengl\glfw\imgui\ImGuiMenu.h>
 #include <igl/jet.h>
 #include <iostream>
-#include <ctime>
 
 
 

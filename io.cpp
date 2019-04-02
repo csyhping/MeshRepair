@@ -2,13 +2,15 @@
 
 
 void default_info() {
-	std::cout << "First Mesh Demo by Yuhan Ping. Version 0.1." << std::endl;
+	std::cout << "First Mesh Demo by Yuhan Ping. Version v "<< CURRENTVERSION << std::endl;
+	std::cout << "If any enquiries, please contact csyhping@connect.hku.hk." << std::endl;
 	std::cout << "-------" << std::endl;
-	time_t now = time(0);
-	char* dt = ctime(&now);
-	std::cout << "Currently under developing. Latest update on " << dt << std::endl;
+	std::cout << "Currently under developing. Latest update on " << UPDATETIME << std::endl;
 	std::cout << "-------" << std::endl;
-	std::cout << "Use [-o] to enable the ImGui viewer." << std::endl;
+	std::cout << "USAGE: MeshRepair.exe [inputfile.off] [outputfile.off] [-option]." << std::endl;
+	std::cout << "[NOTE -option] You can only choose [-c] or [-v], DO NOT use them at the same time." << std::endl;
+	std::cout << "Use [-o] to check color for components." << std::endl;
+	std::cout << "Use [-v] to enable the ImGui viewer." << std::endl;
 	std::cout << "Press Enter to exit." << std::endl;
 	getchar();
 	exit(0);
